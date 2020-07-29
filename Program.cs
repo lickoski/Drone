@@ -8,7 +8,7 @@ namespace Algorithm.Logic
     {
         /// <summary>
         /// PROBLEMA:
-        /// 
+        ///
         /// Implementar um algoritmo para o controle de posição de um drone em um plano cartesiano (X, Y).
         /// 
         /// O ponto inicial do drone é "(0, 0)" para cada execução do método Evaluate ao ser executado cada teste unitário.

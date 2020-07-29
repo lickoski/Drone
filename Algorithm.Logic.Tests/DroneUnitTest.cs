@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Algorithm.Logic.Domain;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Algorithm.Logic.Tests
@@ -6,6 +8,65 @@ namespace Algorithm.Logic.Tests
     [TestClass]
     public class DroneUnitTest
     {
+
+        #region Tests Tiago Lickoski
+        [TestMethod]
+        public void ActionFactory_GetActionsWithOneActionAndOneCanceledAction_ReturnActionsValid()
+        {
+            //Arrange
+            var actionFactory = new ActionFactory(new Input("NX"));
+
+            //Action
+            var actions  = actionFactory.GetActionsInOrder();
+
+            //Assert
+            Assert.IsTrue(actions.Count == 0);
+        }
+
+        [TestMethod]
+        public void ActionFactory_GetActionsWithTwoActionsAndOneCanceledAction_ReturnActionsValid()
+        {
+            //Arrange
+            var actionFactory = new ActionFactory(new Input("NSX"));
+
+            //Action
+            var actions = actionFactory.GetActionsInOrder();
+
+            //Assert
+            Assert.IsTrue(actions[0].Direction == Direction.N);
+            Assert.IsTrue(actions.Count == 1);
+        }
+
+        [TestMethod]
+        public void ActionFactory_GetActionsWithTwoActionsAndTwoCanceledAction_ReturnActionsValid()
+        {
+            //Arrange
+            var actionFactory = new ActionFactory(new Input("NXSX"));
+
+            //Action
+            var actions = actionFactory.GetActionsInOrder();
+
+            //Assert
+            
+            Assert.IsTrue(actions.Count == 0);
+        }
+
+        [TestMethod]
+        public void ActionFactory_GetActionsWithTwoActionsAndTwoCanceledActionSequence_ReturnActionsValid()
+        {
+            //Arrange
+            var actionFactory = new ActionFactory(new Input("NSXX"));
+
+            //Action
+            var actions = actionFactory.GetActionsInOrder();
+
+            //Assert
+            Assert.IsTrue(actions[0].Direction == Direction.N);
+            Assert.IsTrue(actions[1].Direction == Direction.S);
+            Assert.IsTrue(actions.Count == 2);
+        }
+        #endregion
+
         [TestMethod]
         public void Input_NNNNNLLLLL()
         {
@@ -129,5 +190,6 @@ namespace Algorithm.Logic.Tests
                 Enumerable.Repeat('L', 1000)).Concat(
                 Enumerable.Repeat('O', 500)).ToArray())));
         }
+        
     }
 }

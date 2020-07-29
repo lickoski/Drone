@@ -24,26 +24,44 @@ namespace Algorithm.Logic.Domain
             var inputActions = Regex.Matches(_input.SringInput, @"([NSLO]\d*)|X");
 
             //PERCORRE AS AÇÕES
-            foreach (var item  in inputActions)
-            {   
+            foreach (var item in inputActions)
+            {
                 //NESTE PONTO É REALIZADO MAIS UMA REGEX PARA SEPARAR AS ACTIONS DOS STEPS
-                //ASSIM FACULITANDO A CRIAÇÃO DA LISTA DE ACTIONS
+                //ASSIM FACILITANDO A CRIAÇÃO DA LISTA DE ACTIONS
                 var regexdirectionAndSteps = new Regex("(?<Direction>[a-zA-Z]*)(?<Steps>[0-9]*)");
                 var directionAndSteps = regexdirectionAndSteps.Match(item.ToString());
                 var direction = directionAndSteps.Groups["Direction"].Value.ToString();
                 var steps = directionAndSteps.Groups["Steps"].Value;
 
                 if (string.IsNullOrEmpty(steps)) steps = "1";
-                
+
                 //FORMA DE TRABALHAR COM O CHAR DO ENUM
-                Direction  enumDirection;
+                Direction enumDirection;
                 var teste = Enum.TryParse(direction, true, out enumDirection);
 
                 var action = new Action(enumDirection, Convert.ToInt32(steps));
 
                 actions.Add(action);
             }
-            
+
+            return RemoveCanceledAction(actions);
+        }
+
+        private List<Action> RemoveCanceledAction(List<Action> actions)
+        {
+            for (int i = actions.Count - 1; i >= 1; i--)
+            {
+                if (actions[i].Direction == Direction.X)
+                {
+                    if (actions.Count > 1)
+                        actions.RemoveRange(i - 1, 2);
+                    else
+                    {
+                        actions.RemoveAt(i);
+                    }
+                }
+            }
+
             return actions;
         }
 
