@@ -1,6 +1,7 @@
 ﻿
 namespace Algorithm.Logic
 {
+    using Algorithm.Logic.Domain;
     using System;
 
     public class Program
@@ -38,6 +39,16 @@ namespace Algorithm.Logic
         public static string Evaluate(string input)
         {
             // TODO: Este método é o ponto de entrada para a lógica.
+            var stringInput = new Input(input);
+            if (stringInput.IsValid())
+            {
+                var actions = new ActionFactory(stringInput);
+                var actionsInOrder = actions.GetActionsInOrder();
+            }
+            else return stringInput.GetCoordinateError();
+
+
+
             return "(X, Y)";
         }
     }
