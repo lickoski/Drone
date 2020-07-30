@@ -11,7 +11,7 @@ namespace Algorithm.Logic.Tests
 
         #region Tests Tiago Lickoski
         [TestMethod]
-        public void ActionFactory_GetActionsWithOneActionAndOneCanceledAction_ReturnActionsValid()
+        public void ActionFactory_InputNX_ReturnListCountZero()
         {
             //Arrange
             var actionFactory = new ActionFactory(new Input("NX"));
@@ -24,7 +24,7 @@ namespace Algorithm.Logic.Tests
         }
 
         [TestMethod]
-        public void ActionFactory_GetActionsWithTwoActionsAndOneCanceledAction_ReturnActionsValid()
+        public void ActionFactory_InputNSX_ReturnN()
         {
             //Arrange
             var actionFactory = new ActionFactory(new Input("NSX"));
@@ -38,7 +38,7 @@ namespace Algorithm.Logic.Tests
         }
 
         [TestMethod]
-        public void ActionFactory_GetActionsWithTwoActionsAndTwoCanceledAction_ReturnActionsValid()
+        public void ActionFactory_InputNXSX_ReturnListCountZero()
         {
             //Arrange
             var actionFactory = new ActionFactory(new Input("NXSX"));
@@ -52,7 +52,7 @@ namespace Algorithm.Logic.Tests
         }
 
         [TestMethod]
-        public void ActionFactory_GetActionsWithTwoActionsAndTwoCanceledActionSequence_ReturnActionsValid()
+        public void ActionFactory_InputNSXX_ReturnListCountZero()
         {
             //Arrange
             var actionFactory = new ActionFactory(new Input("NSXX"));
@@ -61,11 +61,38 @@ namespace Algorithm.Logic.Tests
             var actions = actionFactory.GetActionsInOrder();
 
             //Assert
-            Assert.IsTrue(actions[0].Direction == Direction.N);
-            Assert.IsTrue(actions[1].Direction == Direction.S);
-            Assert.IsTrue(actions.Count == 2);
+            Assert.IsTrue(actions.Count == 0);
         }
+
+        [TestMethod]
+        public void ActionFactory_InputNNNXLLLXX()
+        {
+            Assert.AreEqual("(1, 2)", Program.Evaluate("NNNXLLLXX"));
+        }
+
+        [TestMethod]
+        public void ActionFactory_InputNNNLLL()
+        {
+            Assert.AreEqual("(3, 3)", Program.Evaluate("NNNLLL"));
+        }
+
+        [TestMethod]
+        public void ActionFactory_InputN123LSX()
+        {
+            Assert.AreEqual("(1, 123)", Program.Evaluate("N123LSX"));
+        }
+
+        [TestMethod]
+        public void ActionFactory_InputNLS3X()
+        {
+            Assert.AreEqual("(1, 1)", Program.Evaluate("NLS3X"));
+        }
+
+
         #endregion
+
+
+        #region Tests Linx
 
         [TestMethod]
         public void Input_NNNNNLLLLL()
@@ -190,6 +217,7 @@ namespace Algorithm.Logic.Tests
                 Enumerable.Repeat('L', 1000)).Concat(
                 Enumerable.Repeat('O', 500)).ToArray())));
         }
-        
+        #endregion
+
     }
 }

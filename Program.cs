@@ -38,18 +38,35 @@ namespace Algorithm.Logic
         /// <returns>String representando o ponto cartesiano após a execução dos comandos (X, Y)</returns>
         public static string Evaluate(string input)
         {
-            // TODO: Este método é o ponto de entrada para a lógica.
             var stringInput = new Input(input);
-            if (stringInput.IsValid())
+
+            try
             {
-                var actions = new ActionFactory(stringInput);
-                var actionsInOrder = actions.GetActionsInOrder();
+                // TODO: Este método é o ponto de entrada para a lógica.
+                
+                if (stringInput.IsValid())
+                {
+                    var actions = new ActionFactory(stringInput);
+                    var actionsInOrder = actions.GetActionsInOrder();
+
+                    var drone = new Drone();
+
+                    foreach (var acao in actionsInOrder)
+                    {
+                        drone.Move(acao);
+                    }
+
+                    return drone.ToString();
+
+                }
+                else return stringInput.GetCoordinateError();
             }
-            else return stringInput.GetCoordinateError();
+            catch (ArgumentException)
+            {
+                return stringInput.GetCoordinateError();
+            }
 
 
-
-            return "(X, Y)";
         }
     }
 }

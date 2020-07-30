@@ -44,6 +44,7 @@
     <Compile Include="Domain\Aircraft.cs" />
     <Compile Include="Domain\ActionFactory.cs" />
     <Compile Include="Domain\Drone.cs" />
+    <Compile Include="Domain\IInput.cs" />
     <Compile Include="Domain\Input.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

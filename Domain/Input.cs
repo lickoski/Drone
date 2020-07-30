@@ -7,26 +7,31 @@ using System.Threading.Tasks;
 
 namespace Algorithm.Logic.Domain
 {
-    public class Input
+    public class Input:IInput
     {
-        public string SringInput { get; private set; }
+        public string _stringInput { get; private set; }
 
         private const string ERROR_INPUT = "(999, 999)";
         public Input(string input)
         {
-            SringInput = input;
+            _stringInput = input;
         }
 
         public bool IsValid()
         {
-            if (String.IsNullOrWhiteSpace(SringInput)) return false;
+            if (String.IsNullOrWhiteSpace(_stringInput)) return false;
 
-            return Regex.IsMatch(SringInput, @"^(X*([NSLO]+\d*)+X*)*$");
+            return Regex.IsMatch(_stringInput, @"^(X*([NSLO]+\d*)+X*)*$");
         }
 
         public string GetCoordinateError()
         {
             return ERROR_INPUT;
+        }
+
+        public string GetInput()
+        {
+            return _stringInput;
         }
     }
 }

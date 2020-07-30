@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,9 @@ namespace Algorithm.Logic.Domain
 {
     public class ActionFactory
     {
-        private readonly Input _input;
-        public ActionFactory(Input input)
+        private readonly IInput _input;
+
+        public ActionFactory(IInput input)
         {
             _input = input;
         }
@@ -21,7 +23,7 @@ namespace Algorithm.Logic.Domain
 
             //UTILIZA UMA REGEX PARA SEPARAR AS AÇÕES A SE FAZER
             //ACHEI REGEX MELHOR FORMA DE SE EXTRAIR O DADO EM FORMA DE FILA
-            var inputActions = Regex.Matches(_input.SringInput, @"([NSLO]\d*)|X");
+            var inputActions = Regex.Matches(_input.GetInput(), @"([NSLO]\d*)|X");
 
             //PERCORRE AS AÇÕES
             foreach (var item in inputActions)
@@ -35,31 +37,61 @@ namespace Algorithm.Logic.Domain
 
                 if (string.IsNullOrEmpty(steps)) steps = "1";
 
-                //FORMA DE TRABALHAR COM O CHAR DO ENUM
-                Direction enumDirection;
-                var teste = Enum.TryParse(direction, true, out enumDirection);
-
-                var action = new Action(enumDirection, Convert.ToInt32(steps));
-
+                var action = GetAction(direction, steps);
                 actions.Add(action);
             }
 
             return RemoveCanceledAction(actions);
         }
 
+
+        private Action GetAction(string direction, string steps)
+        {
+            Direction enumDirection;
+            var teste = Enum.TryParse(direction, true, out enumDirection);
+
+            int stepsInt;
+            var stepValid = Int32.TryParse(steps, out stepsInt);
+            if (!stepValid)
+                throw new System.ArgumentException();
+
+            return new Action(enumDirection, Convert.ToInt32(steps));
+        }
+
         private List<Action> RemoveCanceledAction(List<Action> actions)
         {
-            for (int i = actions.Count - 1; i >= 1; i--)
+            int accumulatorRemove = 0;
+
+            for (int i = actions.Count - 1; i >= 0;)
             {
                 if (actions[i].Direction == Direction.X)
                 {
                     if (actions.Count > 1)
-                        actions.RemoveRange(i - 1, 2);
-                    else
                     {
-                        actions.RemoveAt(i);
+                        if (actions[i - 1].Direction != Direction.X)
+                        {
+                            actions.RemoveRange(i - 1, 2);
+                            i -= 2;
+                            continue;
+                        }
+                        else
+                        {
+                            actions.RemoveAt(i);
+                            accumulatorRemove += 1;
+                            i--;
+                            continue;
+                        }
                     }
                 }
+                else
+                {
+                    if (accumulatorRemove > 0)
+                    {
+                        actions.RemoveAt(i);
+                        accumulatorRemove--;
+                    }
+                }
+                i--;
             }
 
             return actions;
