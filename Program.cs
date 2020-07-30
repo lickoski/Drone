@@ -51,9 +51,9 @@ namespace Algorithm.Logic
 
                     var drone = new Drone();
 
-                    foreach (var acao in actionsInOrder)
+                    foreach (var action in actionsInOrder)
                     {
-                        drone.Move(acao);
+                        drone.Move(action);
                     }
 
                     return drone.ToString();

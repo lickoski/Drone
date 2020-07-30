@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Algorithm.Logic.Domain
 {
+
     public interface IInput
     {
         bool IsValid();

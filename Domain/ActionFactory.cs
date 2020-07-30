@@ -7,34 +7,36 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Algorithm.Logic.Domain
-{
-    public class ActionFactory
+{   /// <summary>
+    /// Classe responsável por prover uma lista de Actions em sua ordem de criação
+    /// Essa classe possui uma Injeção de dependência de IInput, fazendo com que a classe saiba implementar com base no contrato da interface
+    /// </summary>
+    public class ActionFactory : IDisposable
     {
         private readonly IInput _input;
-
         public ActionFactory(IInput input)
         {
             _input = input;
         }
 
+        /// <summary>
+        /// Retorna uma lista de Actions ordenada com base no Input injetado por dependência
+        /// </summary>
         public List<Action> GetActionsInOrder()
         {
             var actions = new List<Action>();
 
-            //UTILIZA UMA REGEX PARA SEPARAR AS AÇÕES A SE FAZER
-            //ACHEI REGEX MELHOR FORMA DE SE EXTRAIR O DADO EM FORMA DE FILA
+            //Utiliza regex para separar as ações
             var inputActions = Regex.Matches(_input.GetInput(), @"([NSLO]\d*)|X");
 
-            //PERCORRE AS AÇÕES
+
             foreach (var item in inputActions)
             {
-                //NESTE PONTO É REALIZADO MAIS UMA REGEX PARA SEPARAR AS ACTIONS DOS STEPS
-                //ASSIM FACILITANDO A CRIAÇÃO DA LISTA DE ACTIONS
+                //Separa as Actions dos Steps e fabrica um objeto Action válido
                 var regexdirectionAndSteps = new Regex("(?<Direction>[a-zA-Z]*)(?<Steps>[0-9]*)");
                 var directionAndSteps = regexdirectionAndSteps.Match(item.ToString());
                 var direction = directionAndSteps.Groups["Direction"].Value.ToString();
                 var steps = directionAndSteps.Groups["Steps"].Value;
-
                 if (string.IsNullOrEmpty(steps)) steps = "1";
 
                 var action = GetAction(direction, steps);
@@ -58,6 +60,10 @@ namespace Algorithm.Logic.Domain
             return new Action(enumDirection, Convert.ToInt32(steps));
         }
 
+        /// <summary>
+        /// Implementa o cancelamento de ações na fila de Actions
+        /// Retorna uma lista de actions com as ações que realmente devem ser executadas
+        /// </summary>
         private List<Action> RemoveCanceledAction(List<Action> actions)
         {
             int accumulatorRemove = 0;
@@ -97,5 +103,22 @@ namespace Algorithm.Logic.Domain
             return actions;
         }
 
+
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                disposedValue = true;
+                this.Dispose();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+        }
     }
 }

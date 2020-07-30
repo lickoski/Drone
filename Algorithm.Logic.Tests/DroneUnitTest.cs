@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Algorithm.Logic.Domain;
+using JetBrains.dotMemoryUnit;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Algorithm.Logic.Tests
@@ -11,17 +13,65 @@ namespace Algorithm.Logic.Tests
 
         #region Tests Tiago Lickoski
         [TestMethod]
+        [DotMemoryUnit(FailIfRunWithoutSupport = false)]
         public void ActionFactory_InputNX_ReturnListCountZero()
         {
+            var memoryCheckPoint = dotMemory.Check();
+
             //Arrange
             var actionFactory = new ActionFactory(new Input("NX"));
 
             //Action
-            var actions  = actionFactory.GetActionsInOrder();
+            var actions = actionFactory.GetActionsInOrder();
 
             //Assert
             Assert.IsTrue(actions.Count == 0);
         }
+
+        [TestMethod]
+        [DotMemoryUnit(FailIfRunWithoutSupport = false)]
+        public void ActionFactory_MemoryTest_Dispose()
+        {
+            var memoryCheckPoint = dotMemory.Check();
+
+            //Arrange
+            using (var actionFactory =  new ActionFactory(new Input("NX")))
+            {
+                //Action
+                var actions = actionFactory.GetActionsInOrder();
+            }
+
+            //Assert
+            dotMemory.Check(memory =>
+            {
+                Assert.IsTrue(memory.GetObjects(where => where.Type
+                        .Is<ActionFactory>())
+                    .ObjectsCount == 0);
+            });
+        }
+
+        [TestMethod]
+        [DotMemoryUnit(FailIfRunWithoutSupport = false)]
+        public void ActionFactory_MemoryTest_NoDispose()
+        {
+            var memoryCheckPoint = dotMemory.Check();
+
+            //Arrange
+            var actionFactory = new ActionFactory(new Input("NX"));
+
+            //Action
+            var actions = actionFactory.GetActionsInOrder();
+
+            //Assert
+            dotMemory.Check(memory =>
+            {
+                Assert.IsTrue(memory.GetObjects(where => where.Type
+                        .Is<ActionFactory>())
+                    .ObjectsCount == 1);
+            });
+        }
+
+
 
         [TestMethod]
         public void ActionFactory_InputNSX_ReturnN()
