@@ -16,8 +16,6 @@ namespace Algorithm.Logic.Tests
         [DotMemoryUnit(FailIfRunWithoutSupport = false)]
         public void ActionFactory_InputNX_ReturnListCountZero()
         {
-            var memoryCheckPoint = dotMemory.Check();
-
             //Arrange
             var actionFactory = new ActionFactory(new Input("NX"));
 
